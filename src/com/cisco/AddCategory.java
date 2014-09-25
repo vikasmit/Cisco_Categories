@@ -27,7 +27,7 @@ public class AddCategory {
 			 RootElement rootElement=new RootElement();
 			 List<Categories> sList=new ArrayList<Categories>();
 	         //   FileInputStream file = new FileInputStream(new File("Products_hierarchy_1st_cut_cleaned_up.xlsx"));
-			 FileInputStream file = new FileInputStream(new File("product_categories_0918_1.xlsx"));
+			 FileInputStream file = new FileInputStream(new File("product_category_0918_modified.xlsx"));
 	           
 	            XSSFWorkbook workbook = new XSSFWorkbook(file);
 	            XSSFSheet sheet = workbook.getSheetAt(0);
