@@ -14,7 +14,7 @@ public static void main(String[] args) {
             IQServiceClientManager.connect("admin", "admin123", "INQUIRABANK", "INQUIRABANK",
                 "http://localhost:8226/imws/WebObjects/IMWebServicesNG.woa/ws/RequestProcessor",
                 null
-                , false);
+                , true);
     IQCategoryRequest categoryRequest= client.getCategoryRequest();
     	CategoryITO parentITO= categoryRequest.getCategoryByReferenceKey("PRODUCTS");
     	if(parentITO!=null)

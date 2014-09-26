@@ -3,6 +3,7 @@ package com.cisco;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -34,6 +35,9 @@ public class AddCategory {
 	            Iterator<Row> rowIterator = sheet.iterator();
 	            String parentref1="";
 				 String parentref2="";
+				 
+				 HashSet<String> level2Set=new HashSet<String>();
+				 HashSet<String> level3Set=new HashSet<String>();
 	           
 				while (rowIterator.hasNext())
 	            {
@@ -56,7 +60,7 @@ public class AddCategory {
 		                    if(cell.getColumnIndex()==0 && cell.getStringCellValue().length()>0)
 		                    {
 		                    	cat1.setCategoryName(cell.getStringCellValue());
-		                    	cat1.setParentKey("");
+		                    	cat1.setParentKey("PRODUCTS");
 		                    	if(cell.getStringCellValue().length()>0)
 		                    	cat1.setRefrenceKey(cell.getStringCellValue().replaceAll(" ", "_")+"_"+row.getRowNum()+0);
 		                    	parentref1=cat1.getRefrenceKey();
@@ -64,18 +68,26 @@ public class AddCategory {
 		                    }
 		                   if(cell.getColumnIndex()==1 && cell.getStringCellValue().length()>0)
 		                   {
+		                	   
 		                	   cat2.setCategoryName(cell.getStringCellValue());
 		                	   cat2.setParentKey(parentref1);
-		                	   if(cell.getStringCellValue().length()>0)
-		                	   cat2.setRefrenceKey(cell.getStringCellValue().replaceAll(" ", "_")+"_"+row.getRowNum()+1);
-		                	   parentref2=cat2.getRefrenceKey();
-		                	   sList.add(cat2);
+		                	      if(level2Set.contains(parentref1+"_"+cell.getStringCellValue())){
+		                			  continue; 
+		                	   		}
+		                		   cat2.setRefrenceKey(cell.getStringCellValue().replaceAll(" ", "_")+"_"+row.getRowNum()+1);
+		                		   parentref2=cat2.getRefrenceKey();
+		                		   sList.add(cat2);
+		                	   level2Set.add(cat2.getParentKey()+"_"+cat2.getCategoryName());
 		                   }  
 		                   if(cell.getColumnIndex()==2 && cell.getStringCellValue().length()>0){
+		                	   if(level3Set.contains(parentref2+"_"+cell.getStringCellValue())){
+		                			  continue; 
+		                	   }
 		                	   cat3.setCategoryName(cell.getStringCellValue());
 		                	   cat3.setParentKey(parentref2);
 		                	   cat3.setRefrenceKey(cell.getStringCellValue().replaceAll(" ", "_")+"_"+row.getRowNum()+2);
 		                	   sList.add(cat3);
+		                	   level3Set.add(parentref2+"_"+cell.getStringCellValue());
 		                   }
 		                }
 	                }
@@ -83,7 +95,7 @@ public class AddCategory {
 				rootElement.setList(sList);
 				
 				for(Categories cat:sList){
-					//addToCategory(cat.getParentKey(), cat.getRefrenceKey(), cat.getCategoryName());
+					addToCategory(cat.getParentKey(), cat.getRefrenceKey(), cat.getCategoryName());
 				}
 				System.out.println("categories added");
 	        }
@@ -97,8 +109,8 @@ public class AddCategory {
 		IQServiceClient client=null;
 		try{
 		 client =
-	            IQServiceClientManager.connect("admin", "admin", "INQUIRABANK", "INQUIRABANK",
-	                "http://ritujain:8226/imws/WebObjects/IMWebServicesNG.woa/ws/RequestProcessor",
+	            IQServiceClientManager.connect("admin", "admin123", "INQUIRABANK", "INQUIRABANK",
+	                "http://localhost:8226/imws/WebObjects/IMWebServicesNG.woa/ws/RequestProcessor",
 	                null
 	                , true);
 	    IQCategoryRequest categoryRequest= client.getCategoryRequest();
